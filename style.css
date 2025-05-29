@@ -1,0 +1,43 @@
+#app .slidev-layout.cover h1, #app .slidev-layout.intro h1 {
+  font-size: 50px;
+}
+
+#app .slidev-layout.cover h3, #app .slidev-layout.intro h3 {
+  text-align: right;
+
+}
+
+#app .slidev-layout.cover h3:first-of-type, #app .slidev-layout.intro h3:first-of-type {
+  margin-top: 150px;
+}
+
+#app #slide-content strong, #app #slide-content em {
+  color: var(--foreground);
+}
+
+.slidev-layout {
+  font-size: 1.4rem;
+}
+
+code {
+  font-size: 1.4em
+}
+
+.slidev-layout a {
+  border-bottom: none;
+}
+
+#app #slide-content {
+  background: bottom right 25px / 50px 50px url("/xelix.svg") no-repeat, linear-gradient(135deg, #6115A6, #030312);
+}
+
+:root {
+  --background: #030312;
+  --purple: #D92398;
+  --cyan: #0098FF;
+}
+
+
+.slidev-layout.two-columns {
+  --slidev-code-margin: 10px
+}

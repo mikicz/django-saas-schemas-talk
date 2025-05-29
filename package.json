@@ -1,0 +1,15 @@
+{
+  "name": "talk-name",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Mikuláš Poul <mikulaspoul@gmail.com>",
+  "license": "CC-BY-NC-ND-4.0",
+  "dependencies": {
+    "@slidev/cli": "^0.49.10",
+    "playwright-chromium": "^1.47.2",
+    "slidev-theme-dracula": "^0.2.0"
+  },
+  "scripts": {
+    "dev": "slidev"
+  }
+}
