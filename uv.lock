@@ -31,10 +31,23 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "django-tenants" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "django", specifier = ">=5.2.3" }]
+requires-dist = [
+    { name = "django", specifier = ">=5.2.3" },
+    { name = "django-tenants", specifier = ">=3.8.0" },
+]
+
+[[package]]
+name = "django-tenants"
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a8/7b/22e3bb79d48e5a4fdcacdcdc27bbc5c2523a2b7892b440bfe229f313d823/django_tenants-3.8.0.tar.gz", hash = "sha256:07d009d5d01be2d65c3f5ddbf323d58d1228838fc1a64fded15c8e5c6f41cf8f", size = 154307 }
 
 [[package]]
 name = "sqlparse"

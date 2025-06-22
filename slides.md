@@ -148,22 +148,178 @@ DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 - Especially if dernomalised (trade-off)
 - Large tables affect all tenants
 
-<!---
+<!--
 ~381Mb for 50M FKs in index
 ~1GiB for 50M FKs in index
---->
-
-
----
-
-# Postgres schemas [3m]
+-->
 
 ---
 
-# Django-tenants [3m]
+# PostgreSQL schemas
+
+- Schemas in PostgreSQL refer to its namespace solution
+- By default data belongs to the `public` schema
+- Each database can have multiple schemas
+- Each schema has its own tables, indexes and data
+- Tables can refer to tables in other schemas
 
 ---
 
+# Using PostgreSQL schemas in SQL
+
+```sql
+CREATE SCHEMA tenant1;
+CREATE SCHEMA tenant2;
+CREATE TABLE tenant1.supplier_supplier (...);
+CREATE TABLE tenant2.supplier_supplier (...);
+```
+
+<v-clicks>
+
+```sql
+SELECT * FROM tenant1.supplier_supplier;  /* returns data from tenant 1 */
+```
+
+```sql
+SET search_path to 'tenant1';  /* sets namespace to tenant 1 */
+
+SELECT * FROM supplier_supplier;  /* returns data from the active namespace */
+SELECT * FROM tenant2.supplier_supplier;  /* returns data from tenant 2 */
+```
+
+```sql
+SET search_path to 'tenant1', 'public';  /* primary / secondary namespace */
+
+SELECT *
+FROM supplier_supplier
+JOIN user_user on supplier_supplier.owner_id = user_user.id;
+```
+
+</v-clicks>
+
+---
+
+# django-tenants
+
+- A library which allows the utilisation of schemas in Django
+- Full disclaimer, not written or maintained by me, maintained by Tom Turner
+- Fork of earlier `django-tenant-schemas` by Bernardo Pires
+- Have used both, for about a decade now
+- Splits Django apps into shared and tenanted apps
+- Routes requests to correct tenant by subdomain
+
+<!--
+Maintained by Tom Turner and Alexander Todorov
+-->
+
+---
+
+# Addresses our issues
+
+- Tenant is set and forget
+- Do not need to remember to filter everywhere
+- Queries are faster without the filters
+- Tables and indexes don't grow as quickly
+
+## With extra features
+
+- Performance issues localised to tenants
+- Full data separation
+- Easy to export / delete a specific tenant
+
+---
+
+# What django-tenants manages
+
+- The lifecycle of the schemas
+- Migrations in individual schemas
+- Routing requests to the correct tenant
+- Tenant-aware file handling (static, media)
+- And more - check out the docs!
+
+---
+
+# Installation
+
+- Update database settings
+- Create the tenant model
+- Configure which apps are shared and which are tenanted
+- Add middleware
+
+--- 
+
+# Tenant models
+
+```python
+# src/tenant/models.py
+from django.db import models
+from django_tenants.models import TenantMixin, DomainMixin
+
+class Tenant(TenantMixin):
+    name = models.CharField(max_length=255)
+
+class Domain(DomainMixin):
+    # contains FK to Tenant and a domain
+    pass
+```
+
+---
+
+# Defining shared and tenanted apps
+
+```python
+# settings.py
+SHARED_APPS = [
+  "django_tenants",
+  "src.public.tenant",
+  "src.public.user",
+  ...
+]
+TENANT_APPS = [
+  "src.tenant.supplier",
+  "src.tenant.invoice",
+  ...
+]
+INSTALLED_APPS = SHARED_APPS + TENANT_APPS 
+```
+
+---
+
+# Middleware
+
+```python
+MIDDLEWARE = (
+    'django_tenants.middleware.main.TenantMainMiddleware',
+    #...
+)
+```
+
+- Retrieves domain from request 
+- Looks up `Domain` instance
+- Activates the linked tenant
+
+```python
+tenant = ...  # look up the tenant from the domain
+request.tenant = tenant
+connection.set_tenant(request.tenant)
+```
+
+--- 
+
+# Alternative methods of routing
+
+- Default routing is by domain or subdomain
+- django-tenants also supports routing by URL path (e.g. `/r/tenant1/`)
+- Easy to hack for other methods
+  - At Xelix we have custom middleware to route by user
+
+```python
+tenant = request.user.tenant
+request.tenant = tenant
+connection.set_tenant(request.tenant)
+```
+
+---
 
 # Using django-tenants [8m]
 
