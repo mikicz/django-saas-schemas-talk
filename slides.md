@@ -37,6 +37,18 @@ Mention all links & relevant details are on mikulaspoul, plus a blog and link to
 
 ---
 
+# Slides
+
+TODO: add QR and link to slides
+
+---
+layout: section
+---
+
+# SaaS
+
+---
+
 # What even is SaaS 
 
 - *Software as a Service* is a method of providing software
@@ -115,6 +127,12 @@ This in theory could be just one of the filters, but there are no possible const
 -->
 
 ---
+layout: section
+---
+
+# Issues with setup 
+
+---
 
 # The constant filtering
 
@@ -152,6 +170,12 @@ DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 ~381MiB for 50M FKs in index
 ~1GiB for 50M FKs in index
 -->
+
+---
+layout: section
+---
+
+# PostgreSQL schemas
 
 ---
 
@@ -198,9 +222,14 @@ JOIN user_user on supplier_supplier.owner_id = user_user.id;
 </v-clicks>
 
 ---
+layout: section
+---
 
 # django-tenants
 
+---
+
+# django-tenants
 - A library which allows the utilisation of schemas in Django
 - Full disclaimer, not written or maintained by me, maintained by Tom Turner
 - Fork of earlier `django-tenant-schemas` by Bernardo Pires
@@ -390,6 +419,33 @@ for tenant in Tenant.objects.all():
 - Probably a job for a custom SQL / Django management command
 
 <!--
-
 Took me 3 weeks to implemenent and release (very early on)
 -->
+
+---
+layout:section
+---
+
+# Conclusion
+
+---
+
+# What have we learned
+
+TODO
+
+---
+layout: section
+---
+
+# Questions?
+
+---
+layout: center
+class: "text-center"
+---
+
+# Slides
+
+TODO: Add QR to slides
+TODO: Add link to slides
