@@ -48,13 +48,13 @@ Mention all links & relevant details are on mikulaspoul, plus a blog and link to
 
 # Tenants in Saas
 
-- A common concept in a SaaS is a tenant
+- A common concept in SaaS is a tenant
 - For example, each customer of Xelix is a tenant
 - Infrastructure is shared between tenants
 
 --- 
 
-# Let's build a tenant app
+# Let's build a SaaS app
 
 - We want to sell to multiple companies
 - Our core business is to find duplicates between invoices
@@ -145,11 +145,11 @@ DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 # Database size impact
 
 - Tables and indexes grow in size more quickly
-- Especially if dernomalised (trade-off)
+- Especially if dernomalised
 - Large tables affect all tenants
 
 <!--
-~381Mb for 50M FKs in index
+~381MiB for 50M FKs in index
 ~1GiB for 50M FKs in index
 -->
 
@@ -224,7 +224,7 @@ Maintained by Tom Turner and Alexander Todorov
 ## With extra features
 
 - Performance issues localised to tenants
-- Full data separation
+- Full data segragation
 - Easy to export / delete a specific tenant
 
 ---
@@ -311,20 +311,85 @@ connection.set_tenant(request.tenant)
 - Default routing is by domain or subdomain
 - django-tenants also supports routing by URL path (e.g. `/r/tenant1/`)
 - Easy to hack for other methods
-  - At Xelix we have custom middleware to route by user
+
+---
+
+# Custom routing
+
+- At Xelix we have custom middleware to route by user
+- Staff users can pick which tenant they impersonate
 
 ```python
-tenant = request.user.tenant
+if request.user.is_staff:
+  tenant = ... # set tenant from session storage
+else:
+  tenant = request.user.tenant
 request.tenant = tenant
 connection.set_tenant(request.tenant)
 ```
 
 ---
 
-# Using django-tenants [8m]
+# Futher examples from Xelix
 
+- Main deployment has 125 tenants
+- ~8 tables in the public schema
+- ~280 tables in each tenant schema
+- Number of objects
+  - 6M suppliers
+  - 370M invoices
+  - 1.5 duplicates
+
+---
+layout: section
+---
+
+# New and exciting problems
 
 ---
 
+# Migrations
 
-# New and exciting problems [5m]
+- Need to run migrations for public schema and each tenant
+  - Slower
+  - Migration progress can be inconsistent between tenants
+- django-tenants can run these in parallel
+
+---
+
+# Cross-tenant analytics
+
+- By definition, the data is segragated
+- Sometimes you want to run queries across all tenants
+- You can create a SQL view which unifies data across all tenants
+- Run query in each tenant and join the results
+
+```python
+for tenant in Tenant.objects.all():
+    with tenant:
+        ...  # run queries
+```
+
+---
+
+# Harder testing
+
+- In your tests you always need to create a tenant
+- The tenant needs running migrations to work
+- This slows down tests
+- At Xelix we 
+  - Use session-scoped fixtures for tenants in tests
+  - Run migrations on one tenant, replicate schema to others
+
+---
+
+# Migrating to django-tenants
+
+- Migrating an existing project is not trivial
+- It is doable with down-time
+- Probably a job for a custom SQL / Django management command
+
+<!--
+
+Took me 3 weeks to implemenent and release (very early on)
+-->
