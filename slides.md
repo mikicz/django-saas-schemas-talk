@@ -36,10 +36,25 @@ Mention all links & relevant details are on mikulaspoul, plus a blog and link to
 -->
 
 ---
+layout: two-cols
+---
 
-# Slides
+# Links
 
-TODO: add QR and link to slides
+## Slides
+
+<img src="/slides.svg" style="width: 80%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
+
+::right::
+
+# &nbsp;
+
+## Contact details
+
+- https://www.mikulaspoul.cz/talks/django-sass-schemas-talk/
+- https://www.mikulaspoul.cz/
+- mikulaspoul@gmail.com
+- mikulas.poul@xelix.com
 
 ---
 layout: section
@@ -449,11 +464,22 @@ layout: section
 # Questions?
 
 ---
-layout: center
-class: "text-center"
+layout: two-cols
 ---
 
-# Slides
+# Links
 
-TODO: Add QR to slides
-TODO: Add link to slides
+## Slides
+
+<img src="/slides.svg" style="width: 80%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
+
+::right::
+
+# &nbsp;
+
+## Contact details
+
+- https://www.mikulaspoul.cz/talks/django-sass-schemas-talk/
+- https://www.mikulaspoul.cz/
+- mikulaspoul@gmail.com
+- mikulas.poul@xelix.com
