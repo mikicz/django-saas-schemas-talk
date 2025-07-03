@@ -52,7 +52,7 @@ layout: section
 # What even is SaaS 
 
 - *Software as a Service* is a method of providing software
-- Provided in the cloud on a managed by the vendor
+- Provided in the cloud managed by the vendor
 - This is often a web application
 - In contrast to e.g. on-promise model
 
@@ -163,7 +163,7 @@ DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 # Database size impact
 
 - Tables and indexes grow in size more quickly
-- Especially if dernomalised
+- Especially if denormalised
 - Large tables affect all tenants
 
 <!--
@@ -292,6 +292,12 @@ class Domain(DomainMixin):
     pass
 ```
 
+```python
+# settings.py
+TENANT_MODEL = "tenant.Tenant"  # todo check
+DOMAIN_MODEL = "tenant.Domain"
+```
+
 ---
 
 # Defining shared and tenanted apps
@@ -383,13 +389,15 @@ layout: section
   - Slower
   - Migration progress can be inconsistent between tenants
 - django-tenants can run these in parallel
+- At xelix we use a "smart" executor, which we open-sourced
+  - [django-tenants-smart-executor](https://pypi.org/project/django-tenants-smart-executor/)
 
 ---
 
 # Cross-tenant analytics
 
-- By definition, the data is segragated
-- Sometimes you want to run queries across all tenants
+- By definition the data is segragated
+- Sometimes you want to run queries / scripts across all tenants
 - You can create a SQL view which unifies data across all tenants
 - Run query in each tenant and join the results
 
@@ -423,7 +431,7 @@ Took me 3 weeks to implemenent and release (very early on)
 -->
 
 ---
-layout:section
+layout: section
 ---
 
 # Conclusion
