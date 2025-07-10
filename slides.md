@@ -27,12 +27,12 @@ fonts:
 - Coding in Python for more years than not
 - Have been using Django for 11 years
 - Staff Engineer at [<img src="/xelix.svg" style="display: inline; height: 25px; margin-top: -10px" />](https://xelix.com/)
-- [www.mikulaspoul.cz](https://www.mikulaspoul.cz/)
 
 </v-clicks>
 
 <!--
-Mention all links & relevant details are on mikulaspoul, plus a blog and link to this talk
+Mention Xelix just went through series B
+Mention hiring (with right to work in the UK)
 -->
 
 ---
@@ -57,6 +57,21 @@ layout: two-cols
 - mikulas.poul@xelix.com
 
 ---
+
+# Contents
+
+- Brief overview of SaaS setup and issues
+- Introduction to PostgreSQL schemas
+- Introduction to `django-tenants`
+
+
+<v-click>
+
+- Soft pre-requisites: Django & SQL
+
+</v-click>
+
+---
 layout: section
 ---
 
@@ -67,45 +82,68 @@ layout: section
 # What even is SaaS 
 
 - *Software as a Service* is a method of providing software
-- Provided in the cloud managed by the vendor
+- Provided in the cloud managed by the seller
+
+<v-clicks>
+
 - This is often a web application
 - In contrast to e.g. on-promise model
 
+</v-clicks>
+
 ---
 
-# Tenants in Saas
+# Tenants in SaaS
+
+<v-clicks>
 
 - A common concept in SaaS is a tenant
-- For example, each customer of Xelix is a tenant
+- For example, each customer of [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) is a tenant
 - Infrastructure is shared between tenants
+
+</v-clicks>
 
 --- 
 
 # Let's build a SaaS app
 
+<v-clicks>
+
 - We want to sell to multiple companies
-- Our core business is to find duplicates between invoices
-- We want to show invoices per supplier to the users
-- Based on Xelix itself
+- Core business is finding duplicates between invoices
+- We want to also show invoices and suppliers to the users
+- Needs to be fast, secure and reliable
+- Based on [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) itself
+
+</v-clicks>
 
 ---
 
-# Basic tenant setup in Django
+# Basic application setup in Django
 
 ```python
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-
+# src/tenant/models.py
 class Tenant(models.Model):
     name = models.CharField(max_length=255)
+```
 
+<v-clicks>
+
+```python
+# src/user/models.py
 class User(AbstractUser):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    
+```
+
+```python
+# src/supplier/models.py
 class Supplier(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    
+```
+
+```python
+# src/invoice/models.py
 class Invoice(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     number = models.CharField(max_length=255)
@@ -115,17 +153,29 @@ class DuplicateInvoice(models.Model):
     invoice2 = models.ForeignKey(Invoice, on_delete=models.CASCADE)
 ```
 
+</v-clicks>
+
 ---
 
 # Querying data for the current user
+
+<v-click>
 
 ```python
 Supplier.objects.filter(tenant=request.user.tenant)
 ```
 
+</v-click>
+
+<v-click>
+
 ```python
 Invoice.objects.filter(supplier__tenant=request.user.tenant)
 ```
+
+</v-click>
+
+<v-click>
 
 ```python
 DuplicateInvoice.objects.filter(
@@ -134,8 +184,17 @@ DuplicateInvoice.objects.filter(
 )
 ```
 
-- Every single database query needs filtering
-- It's worse the deeper your schema is
+</v-click>
+
+<v-click>
+
+
+<div style="text-align: center; padding-top: 50px;">
+
+## Every single database query needs filtering
+
+</div>
+</v-click>
 
 <!--
 This in theory could be just one of the filters, but there are no possible constraints to ensure this is the case in DB.
@@ -151,10 +210,17 @@ layout: section
 
 # The constant filtering
 
+
+
 - You need to remember every single time
   - The `django-scopes` package can make it easier
+
+<v-clicks>
+
 - Every case needs tests
 - Forgetting has severe consequences
+
+</v-clicks>
 
 ---
 
@@ -162,27 +228,38 @@ layout: section
 
 - Select queries are slower due to filtering and joins
 - Insert queries are slower due to updating larger tables and indexes
+
+<v-click>
+
 - Denormalisation can help
 
 ```python
+# src/invoice/models.py
 class DuplicateInvoice(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     invoice1 = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     invoice2 = models.ForeignKey(Invoice, on_delete=models.CASCADE)
 
+# querying
 DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 ```
+
+</v-click>
 
 ---
 
 # Database size impact
 
+<v-clicks>
+
 - Tables and indexes grow in size more quickly
 - Especially if denormalised
-- Large tables affect all tenants
+- Large tables affect all tenants equally
+
+</v-clicks>
 
 <!--
-~381MiB for 50M FKs in index
+~381MiB for 50M FKs in data
 ~1GiB for 50M FKs in index
 -->
 
@@ -245,12 +322,18 @@ layout: section
 ---
 
 # django-tenants
+
 - A library which allows the utilisation of schemas in Django
 - Full disclaimer, not written or maintained by me, maintained by Tom Turner
+
+<v-clicks>
+
 - Fork of earlier `django-tenant-schemas` by Bernardo Pires
 - Have used both, for about a decade now
 - Splits Django apps into shared and tenanted apps
 - Routes requests to correct tenant by subdomain
+
+</v-clicks>
 
 <!--
 Maintained by Tom Turner and Alexander Todorov
@@ -260,20 +343,30 @@ Maintained by Tom Turner and Alexander Todorov
 
 # Addresses our issues
 
+<v-clicks>
+
 - Tenant is set and forget
 - Do not need to remember to filter everywhere
 - Queries are faster without the filters
 - Tables and indexes don't grow as quickly
 
-## With extra features
+</v-clicks>
+
+<v-click>
+
+## Additionally leads to
 
 - Performance issues localised to tenants
 - Full data segragation
 - Easy to export / delete a specific tenant
 
+</v-click>
+
 ---
 
 # What django-tenants manages
+
+<v-clicks>
 
 - The lifecycle of the schemas
 - Migrations in individual schemas
@@ -281,21 +374,45 @@ Maintained by Tom Turner and Alexander Todorov
 - Tenant-aware file handling (static, media)
 - And more - check out the docs!
 
+</v-clicks>
+
 ---
 
 # Installation
+
+<v-clicks>
 
 - Update database settings
 - Create the tenant model
 - Configure which apps are shared and which are tenanted
 - Add middleware
 
+</v-clicks>
+
 --- 
+
+# Database settings
+
+```python {all|5,10}
+# settings.py
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django_tenants.postgresql_backend",
+        # ..
+    }
+}
+
+DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
+
+```
+
+---
 
 # Tenant models
 
-```python
-# src/tenant/models.py
+```python {all|5,8|all}
+# src/public/tenant/models.py
 from django.db import models
 from django_tenants.models import TenantMixin, DomainMixin
 
@@ -307,11 +424,16 @@ class Domain(DomainMixin):
     pass
 ```
 
+<v-click>
+
 ```python
 # settings.py
-TENANT_MODEL = "tenant.Tenant"  # todo check
-DOMAIN_MODEL = "tenant.Domain"
+TENANT_MODEL = "tenant.Tenant"
+TENANT_DOMAIN_MODEL = "tenant.Domain"
 ```
+
+</v-click>
+
 
 ---
 
@@ -344,51 +466,112 @@ MIDDLEWARE = (
 )
 ```
 
-- Retrieves domain from request 
+<v-clicks>
+
+- Retrieves domain from the request 
 - Looks up `Domain` instance
 - Activates the linked tenant
 
 ```python
-tenant = ...  # look up the tenant from the domain
+tenant: Tenant = ...  # look up the tenant from the domain
+
 request.tenant = tenant
 connection.set_tenant(request.tenant)
 ```
 
---- 
+</v-clicks>
+
+---
+
+# Querying data for the current user with django-tenants
+
+<v-clicks>
+
+```python
+Supplier.objects.all()
+```
+
+
+```python
+Invoice.objects.all()
+```
+
+
+```python
+DuplicateInvoice.objects.all()
+```
+
+
+<div style="text-align: center; padding-top: 50px;">
+
+## Models from tenant apps do not need filtering for tenant
+
+</div>
+
+</v-clicks>
+
+---
+layout: section
+---
+
+# django-tenants at [<img src="/xelix.svg" style="display: inline; height: 50px; margin-top: -19px" />](https://xelix.com/)
+
+---
 
 # Alternative methods of routing
 
 - Default routing is by domain or subdomain
 - django-tenants also supports routing by URL path (e.g. `/r/tenant1/`)
-- Easy to hack for other methods
+- Easy to hack other methods
+
+---
+
+# Alternative methods of routing
+
+- Default routing is by domain or subdomain
+- django-tenants also supports routing by URL path (e.g. `/r/tenant1/`)
+- Easy to ~~hack~~ implement other methods
 
 ---
 
 # Custom routing
 
-- At Xelix we have custom middleware to route by user
+- At [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) we have a custom middleware to route by user
 - Staff users can pick which tenant they impersonate
 
+<v-click>
+
 ```python
+tenant: Tenant
 if request.user.is_staff:
   tenant = ... # set tenant from session storage
 else:
   tenant = request.user.tenant
+
 request.tenant = tenant
 connection.set_tenant(request.tenant)
 ```
 
+</v-click>
+
+
 ---
 
-# Futher examples from Xelix
+# Some numbers from [<img src="/xelix.svg" style="display: inline; height: 35px; margin-top: -15px" />](https://xelix.com/)
 
-- Main deployment has 125 tenants
-- ~8 tables in the public schema
-- ~280 tables in each tenant schema
+- Main deployment has ~ 130 tenants
+- ~ 80 tables in the public schema
+- ~ 300 tables in each tenant schema
+
+<v-click>
+
 - Number of objects
-  - 6M suppliers
-  - 370M invoices
-  - 1.5 duplicates
+  - Millions of suppliers
+  - Hundreds of millions of invoices
+  - Millions of duplicates
+  - ~1.5 billion in another table relating to invoices
+
+</v-click>
 
 ---
 layout: section
@@ -401,20 +584,31 @@ layout: section
 # Migrations
 
 - Need to run migrations for public schema and each tenant
-  - Slower
+  - This is slower
   - Migration progress can be inconsistent between tenants
+
+<v-clicks>
+
 - django-tenants can run these in parallel
-- At xelix we use a "smart" executor, which we open-sourced
+- At [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) we use a "smart" executor, which we open-sourced
   - [django-tenants-smart-executor](https://pypi.org/project/django-tenants-smart-executor/)
+
+</v-clicks>
 
 ---
 
 # Cross-tenant analytics
 
+<v-clicks>
+
 - By definition the data is segragated
 - Sometimes you want to run queries / scripts across all tenants
 - You can create a SQL view which unifies data across all tenants
-- Run query in each tenant and join the results
+- Or run query in each tenant and join the results
+
+</v-clicks>
+
+<v-click>
 
 ```python
 for tenant in Tenant.objects.all():
@@ -422,24 +616,35 @@ for tenant in Tenant.objects.all():
         ...  # run queries
 ```
 
+</v-click>
+
 ---
 
 # Harder testing
 
+<v-clicks>
+
 - In your tests you always need to create a tenant
 - The tenant needs running migrations to work
 - This slows down tests
-- At Xelix we 
+- At [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) we 
   - Use session-scoped fixtures for tenants in tests
   - Run migrations on one tenant, replicate schema to others
+
+</v-clicks>
+
 
 ---
 
 # Migrating to django-tenants
 
+<v-clicks>
+
 - Migrating an existing project is not trivial
 - It is doable with down-time
 - Probably a job for a custom SQL / Django management command
+
+</v-clicks>
 
 <!--
 Took me 3 weeks to implemenent and release (very early on)
@@ -455,19 +660,15 @@ layout: section
 
 # What have we learned
 
-TODO
-
----
-layout: section
----
-
-# Questions?
+- Building an SaaS is hard
+- `django-tenants` can help with several aspects
+- Trade-off like everything else 
 
 ---
 layout: two-cols
 ---
 
-# Links
+# Questions?
 
 ## Slides
 
