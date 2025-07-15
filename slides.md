@@ -273,11 +273,15 @@ layout: section
 
 # PostgreSQL schemas
 
+<v-clicks>
+
 - Schemas in PostgreSQL refer to its namespace solution
 - By default data belongs to the `public` schema
 - Each database can have multiple schemas
 - Each schema has its own tables, indexes and data
 - Tables can refer to tables in other schemas
+
+  </v-clicks>
 
 ---
 
