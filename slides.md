@@ -255,6 +255,8 @@ DuplicateInvoice.objects.filter(tenant=request.user.tenant)
 - Tables and indexes grow in size more quickly
 - Especially if denormalised
 - Large tables affect all tenants equally
+- Example of denormalisation -- invoice table with ~460M rows
+  - Tenant column adds 3.4GiB of data, 2.8GiB of indexes
 
 </v-clicks>
 
@@ -281,7 +283,7 @@ layout: section
 - Each schema has its own tables, indexes and data
 - Tables can refer to tables in other schemas
 
-  </v-clicks>
+</v-clicks>
 
 ---
 
@@ -352,19 +354,25 @@ Maintained by Tom Turner and Alexander Todorov
 - Tenant is set and forget
 - Do not need to remember to filter everywhere
 - Queries are faster without the filters
+  - Example of query speed -- invoice table with ~460M rows
+  - Querying for all invoices for tenant with 50M invoices: 26s
+  - Querying a table for identical invoices in separate table: 4s
 - Tables and indexes don't grow as quickly
 
 </v-clicks>
 
-<v-click>
+---
 
-## Additionally leads to
+# Additionally leads to
+
+<v-clicks>
 
 - Performance issues localised to tenants
-- Full data segragation
+- Full data segregation
 - Easy to export / delete a specific tenant
+- Smaller locks on tables in migrations
 
-</v-click>
+</v-clicks>
 
 ---
 
