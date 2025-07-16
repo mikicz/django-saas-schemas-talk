@@ -135,12 +135,19 @@ class User(AbstractUser):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
 ```
 
+
 ```python
 # src/supplier/models.py
 class Supplier(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 ```
+
+</v-clicks>
+
+---
+
+# Basic application setup in Django
 
 ```python
 # src/invoice/models.py
@@ -153,7 +160,6 @@ class DuplicateInvoice(models.Model):
     invoice2 = models.ForeignKey(Invoice, on_delete=models.CASCADE)
 ```
 
-</v-clicks>
 
 ---
 
@@ -271,13 +277,20 @@ layout: section
 
 # PostgreSQL schemas
 
+<v-click>
+
+## Namespaces are one honking great idea -- let's do more of those!
+
+</v-click>
+
 ---
 
 # PostgreSQL schemas
 
+- Schemas in PostgreSQL refer to its namespace solution
+
 <v-clicks>
 
-- Schemas in PostgreSQL refer to its namespace solution
 - By default data belongs to the `public` schema
 - Each database can have multiple schemas
 - Each schema has its own tables, indexes and data
