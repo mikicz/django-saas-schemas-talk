@@ -315,12 +315,22 @@ CREATE TABLE tenant2.supplier_supplier (...);
 SELECT * FROM tenant1.supplier_supplier;  /* returns data from tenant 1 */
 ```
 
+</v-clicks>
+
+---
+
+# Using PostgreSQL schemas in SQL
+
+
 ```sql
 SET search_path to 'tenant1';  /* sets namespace to tenant 1 */
 
 SELECT * FROM supplier_supplier;  /* returns data from the active namespace */
 SELECT * FROM tenant2.supplier_supplier;  /* returns data from tenant 2 */
 ```
+
+
+<v-clicks>
 
 ```sql
 SET search_path to 'tenant1', 'public';  /* primary / secondary namespace */

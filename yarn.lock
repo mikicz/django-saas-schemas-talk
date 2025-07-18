@@ -4416,6 +4416,11 @@ tinyglobby@^0.2.13, tinyglobby@^0.2.14:
     fdir "^6.4.4"
     picomatch "^4.0.2"
 
+tm-themes@^1.10.7:
+  version "1.10.7"
+  resolved "https://registry.yarnpkg.com/tm-themes/-/tm-themes-1.10.7.tgz#149508eb4598cd472f3cf1d6b3f6c1186dad87b4"
+  integrity sha512-/7UiSrze10BQqlyy43LRT4QmQxCYJKMSlyMM6umKwsDIAQZlFqyj5sDe/qoaiVOvAzv22VsoC0GfcEKxI8J0ng==
+
 to-regex-range@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/to-regex-range/-/to-regex-range-5.0.1.tgz#1648c44aae7c8d988a326018ed72f5b4dd0392e4"
