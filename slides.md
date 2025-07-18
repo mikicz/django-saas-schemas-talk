@@ -43,7 +43,7 @@ layout: two-cols
 
 ## Slides
 
-<img src="/slides.svg" style="width: 80%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
+<img src="/slides.svg" style="width: 75%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
 
 ::right::
 
@@ -51,8 +51,7 @@ layout: two-cols
 
 ## Contact details
 
-- https://www.mikulaspoul.cz/talks/django-sass-schemas-talk/
-- https://www.mikulaspoul.cz/
+- [mikulaspoul.cz](https://www.mikulaspoul.cz/)
 - mikulaspoul@gmail.com
 - mikulas.poul@xelix.com
 
@@ -60,10 +59,11 @@ layout: two-cols
 
 # Contents
 
-- Brief overview of SaaS setup and issues
+- Brief overview of SaaS setup and its issues
 - Introduction to PostgreSQL schemas
 - Introduction to `django-tenants`
-
+- How we use it at [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/)
+- Trade-offs with this solution
 
 <v-click>
 
@@ -98,7 +98,7 @@ layout: section
 <v-clicks>
 
 - A common concept in SaaS is a tenant
-- For example, each customer of [<img src="/xelix.svg" style="display: inline; height: 17px; margin-top: -5px" />](https://xelix.com/) is a tenant
+- For example, each customer of SaaS is a tenant
 - Infrastructure is shared between tenants
 
 </v-clicks>
@@ -697,7 +697,7 @@ layout: two-cols
 
 ## Slides
 
-<img src="/slides.svg" style="width: 80%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
+<img src="/slides.svg" style="width: 75%;background-color: white; margin: 5px auto 0;"  alt="QR Code"/>
 
 ::right::
 
@@ -705,7 +705,6 @@ layout: two-cols
 
 ## Contact details
 
-- https://www.mikulaspoul.cz/talks/django-sass-schemas-talk/
-- https://www.mikulaspoul.cz/
+- [mikulaspoul.cz](https://www.mikulaspoul.cz/)
 - mikulaspoul@gmail.com
 - mikulas.poul@xelix.com
