@@ -12,7 +12,7 @@ fonts:
 # **data of your SaaS application in Django**
 
 ### a talk by Mikuláš Poul
-### July 18th, 2028 - [<img src="/europython.png" style="display: inline; height: 25px; margin-top: -5px" />](https://ep2025.europython.eu/) EuroPython
+### July 18th, 2025 - [<img src="/europython.png" style="display: inline; height: 25px; margin-top: -5px" />](https://ep2025.europython.eu/) EuroPython
 
 ---
 
